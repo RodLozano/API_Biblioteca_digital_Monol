@@ -49,7 +49,10 @@ if not logger.handlers:
 app = FastAPI(title="Biblioteca Digital API")
 logger.info("FastAPI app initialized")
 
-
+@app.get("/")
+def root():
+    return {"message": "Bienvenido a la API de la Biblioteca Digital 📚"}
+    
 @app.on_event("startup")
 def on_startup() -> None:
     try:
