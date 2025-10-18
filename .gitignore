@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.env
+*.log
+*.sqlite3
+*.db
+
+# Entornos virtuales
+.venv/
+.venv_*/
+venv/
+env/
+
+# IDEs/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
