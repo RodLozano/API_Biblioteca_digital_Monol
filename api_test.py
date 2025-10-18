@@ -100,31 +100,18 @@ assert r.status_code == 200
 # Obtener préstamo concreto
 r = requests.get(f"{BASE_URL}/prestamos/{prestamo_id}")
 print(f"GET /prestamos/{prestamo_id}:", r.status_code, j(r))
+print("PRESTADO:", r.status_code, r.json())
 assert r.status_code == 200
 
 # Devolver préstamo
 r = requests.put(f"{BASE_URL}/prestamos/{prestamo_id}/devolucion")
 print(f"PUT /prestamos/{prestamo_id}/devolucion:", r.status_code, j(r))
+print("DEVOLUCIÓN:", r.status_code, r.json())
 assert r.status_code == 200
 
-# ----------------------------
-# 4) Eliminar RECURSO (ya sin préstamos activos)
-# ----------------------------
-r = requests.delete(f"{BASE_URL}/recursos/{recurso_id}")
-print(f"DELETE /recursos/{recurso_id}:", r.status_code, j(r))
-print(r.status_code)
-assert r.status_code in (200, 409)
+r2 = requests.get(f"{BASE_URL}/prestamos/{prestamo_id}")
+print("POST-DEVOLUCIÓN:", r2.status_code, r2.json())
 
-# ----------------------------
-# 5) Intentar borrar TIPO con contraseña incorrecta (debe fallar 403/409)
-# ----------------------------
-r = requests.delete(f"{BASE_URL}/tipos/{tipo_id}", json={"password": "mala"})
-print(f"DELETE /tipos/{tipo_id} (bad pass):", r.status_code, j(r))
-assert r.status_code in (403, 409)
 
-# Borrar TIPO con contraseña correcta
-r = requests.delete(f"{BASE_URL}/tipos/{tipo_id}", json={"password": ADMIN_PASSWORD})
-print(f"DELETE /tipos/{tipo_id} (ok):", r.status_code, j(r))
-assert r.status_code == 200
 
 print("\n Todas las pruebas pasaron correctamente")

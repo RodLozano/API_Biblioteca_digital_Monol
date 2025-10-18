@@ -66,24 +66,6 @@ def update_tipo_recurso(db: Session, tipo_id: int, patch: schemas.TipoRecursoUpd
     return tr
 
 
-def delete_tipo_recurso(db: Session, tipo_id: int) -> bool:
-    logger.debug(f"[crud] Eliminando tipo recurso id={tipo_id}")
-    tr = db.get(models.TipoRecurso, tipo_id)
-    if not tr:
-        logger.warning(f"[crud] Tipo recurso a eliminar no encontrado: {tipo_id}")
-        return False
-    # Regla: no eliminar si hay recursos asociados
-    vinculados = db.execute(
-        select(func.count()).select_from(models.Recurso).where(models.Recurso.tipo_id == tipo_id)
-    ).scalar_one()
-    if vinculados > 0:
-        logger.warning(f"[crud] No se puede eliminar tipo recurso {tipo_id}: {vinculados} recursos asociados")
-        return False
-    db.delete(tr)
-    db.commit()
-    logger.info(f"[crud] Tipo recurso eliminado: {tipo_id}")
-    return True
-
 
 # =====================================
 # =============== RECURSO =============
@@ -186,29 +168,6 @@ def update_recurso(db: Session, recurso_id: int, patch: schemas.RecursoUpdate) -
     db.refresh(rec)
     logger.info(f"[crud] Recurso actualizado: {rec.id} - {rec.titulo}")
     return rec
-
-
-def delete_recurso(db: Session, recurso_id: int) -> bool:
-    logger.debug(f"[crud] Eliminando recurso id={recurso_id}")
-    rec = db.get(models.Recurso, recurso_id)
-    if not rec:
-        logger.warning(f"[crud] Recurso a eliminar no encontrado: {recurso_id}")
-        return False
-
-    # Bloquea el borrado si hay préstamos activos
-    activos = db.execute(
-        select(func.count()).select_from(models.Prestamo)
-        .where(models.Prestamo.recurso_id == recurso_id)
-    ).scalar_one()
-
-    if activos > 0:
-        logger.warning(f"[crud] No se puede borrar recurso {recurso_id}: {activos} préstamos activos")
-        return False
-
-    db.delete(rec)
-    db.commit()
-    logger.info(f"[crud] Recurso eliminado: {recurso_id}")
-    return True
 
 
 # =====================================

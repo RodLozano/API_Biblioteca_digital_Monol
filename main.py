@@ -130,31 +130,6 @@ def update_tipo_recurso(
         raise HTTPException(status_code=404, detail="Tipo de recurso no encontrado o no actualizado")
     return _tipo_to_dict(tr)
 
-# DELETE /tipos/{tipo_id} (con contraseña en body)
-@app.delete("/tipos/{tipo_id}", status_code=200, tags=["Tipos de recurso"])
-def delete_tipo_recurso(
-    tipo_id: int,
-    password: str = Body(..., embed=True, description="Contraseña de confirmación"),
-    db: Session = Depends(get_db),
-):
-    logger.debug(f"[api] DELETE /tipos/{tipo_id}")
-    # Si tu CRUD acepta password, pásala. Si no, valida aquí.
-    try:
-        ok = crud.delete_tipo_recurso(db, tipo_id, password=password)  # <-- si tu CRUD lo permite
-    except TypeError:
-        # Validación aquí si el CRUD no tiene 'password'
-        import os
-        ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
-        if password != ADMIN_PASSWORD:
-            raise HTTPException(status_code=403, detail="Contraseña incorrecta o permiso denegado")
-        ok = crud.delete_tipo_recurso(db, tipo_id)
-
-    if not ok:
-        # Puede ser inexistente o con recursos asociados; usamos 409 para conflicto.
-        raise HTTPException(status_code=409, detail="No se pudo eliminar (inexistente o con recursos asociados)")
-    return {"ok": True, "message": f"Tipo de recurso {tipo_id} eliminado"}
-
-
 # ---------------- Helper de salida ----------------
 def _recurso_to_dict(r: models.Recurso) -> dict:
     return {
@@ -219,21 +194,6 @@ def update_recurso(
         # Puede ser que no exista o que se haya bloqueado por reglas de negocio (copias vs préstamos)
         raise HTTPException(status_code=409, detail="No se pudo actualizar el recurso")
     return _recurso_to_dict(rec)
-
-# DELETE /recursos/{recurso_id}
-@app.delete("/recursos/{recurso_id}", status_code=200, tags=["Recursos"])
-def delete_recurso(
-    recurso_id: int,
-    db: Session = Depends(get_db),
-):
-    logger.debug(f"[api] DELETE /recursos/{recurso_id}")
-    ok = crud.delete_recurso(db, recurso_id)
-    if not ok:
-        # inexistente o con préstamos activos
-        raise HTTPException(status_code=409, detail="No se pudo eliminar (inexistente o con préstamos activos)")
-    return {"ok": True, "message": f"Recurso {recurso_id} eliminado"}
-
-
 
 
 
