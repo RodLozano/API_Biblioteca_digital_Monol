@@ -2,6 +2,8 @@
 
 Este proyecto es una API para gestionar una biblioteca digital. La idea es simular cómo funciona una biblioteca real: puedes crear recursos (libros), prestarlos y devolverlos, siempre respetando algunas reglas básicas.
 
+Repositorio de codigo: https://github.com/RodLozano/API_Biblioteca_digital_Monol.git
+
 ## 🎯 ¿Qué se quería conseguir?
 
 El objetivo era crear un sistema simple pero realista para practicar el desarrollo de APIs con FastAPI. Las metas principales fueron:
