@@ -25,3 +25,15 @@ SQLite (base de datos local)
 SQLAlchemy (manejo de base de datos)
 
 Uvicorn (para ejecutar la API)
+
+
+
+# Como usar el repositorio
+
+1 Clonar el repositorio en local con git clone https://github.com/RodLozano/API_Biblioteca_digital_Monol.git
+
+2 Se incluye un requirements.txt para configurar el entorno virtual con las dependencias necesarias, instalar con pip install -r requirements.txt
+
+3 Levantar la aplicacion en local con uvicorn main:app --reload
+
+4 Testear la funcionalidad con el script incluido api-test.py haciendo python api-test.py en la terminal
